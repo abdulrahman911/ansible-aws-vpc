@@ -78,7 +78,7 @@
         cidr: "{{PriSub2Cidr}}"
         resource_tags:
           Name: vprofile-privatesub2
-      register: privsub1_out
+      register: privsub2_out
 
     - name: Create Private Subnet 3 in Zone3
       ec2_vpc_subnet:
@@ -114,4 +114,31 @@
           - dest: 0.0.0.0/0
             gateway_id: "{{igw_out.gateway_id}}"
       register: pubRT_out
+
+    - name: Create NAT Gateway and allocate EIP 
+      ec2_vpc_nat_gateway:
+        state: "{{state}}"
+        region: "{{region}}"
+        subnet_id: "{{pubsub1_out.subnet.id}}"
+        resource_tags:
+          Name: vprofile-NGW        
+        wait: yes 
+        if_exist_do_not_create: true
+      register: NATGTW_out
+
+    - name: Set up private subnet route table
+      ec2_vpc_route_table:
+        vpc_id: "{{vpcout.vpc.id}}"
+        region: "{{region}}"
+        tags:
+          Name: Vprofile-privateRT
+        subnets:
+          - "{{privsub1_out.subnet.id}}"
+          - "{{privsub2_out.subnet.id}}"
+          - "{{privsub3_out.subnet.id}}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{NATGTW_out.nat.gateway_id}}"
+      register: privRT_out
+
 
