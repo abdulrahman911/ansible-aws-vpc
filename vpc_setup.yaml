@@ -121,7 +121,7 @@
         region: "{{region}}"
         subnet_id: "{{pubsub1_out.subnet.id}}"
         tags:
-          Name: vprofile-NGW        
+          Tag1: vprofile-NGW        
         wait: yes 
         if_exist_do_not_create: true
       register: NATGTW_out
@@ -140,5 +140,6 @@
           - dest: 0.0.0.0/0
             gateway_id: "{{NATGTW_out.nat.gateway_id}}"
       register: privRT_out
+
 
 
