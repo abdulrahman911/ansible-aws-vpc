@@ -120,7 +120,7 @@
         state: "{{state}}"
         region: "{{region}}"
         subnet_id: "{{pubsub1_out.subnet.id}}"
-        resource_tags:
+        tags:
           Name: vprofile-NGW        
         wait: yes 
         if_exist_do_not_create: true
